@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp API - Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        h1,
+        h2,
+        h3,
+        h4 {
+            color: #075e54;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #25d366;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        pre {
+            background-color: #f6f8fa;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+            border: 1px solid #e1e4e8;
+        }
+        
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            font-size: 14px;
+        }
+        
+        .endpoint {
+            background-color: #f5f5f5;
+            border-left: 4px solid #075e54;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .method {
+            font-weight: bold;
+            background-color: #075e54;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .get {
+            background-color: #4CAF50;
+        }
+        
+        .post {
+            background-color: #2196F3;
+        }
+        
+        .delete {
+            background-color: #F44336;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #25d366;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .note {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .collapsible {
+            background-color: #075e54;
+            color: white;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.4s;
+        }
+        
+        .collapsible:hover {
+            background-color: #128c7e;
+        }
+        
+        .collapsible:after {
+            content: '\002B';
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .active:after {
+            content: "\2212";
+        }
+        
+        .content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border-radius: 0 0 5px 5px;
+        }
+        
+        .api-section {
+            margin-bottom: 15px;
+        }
+        
+        .json-badge {
+            background-color: #ff5722;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>📱 WhatsApp API - Documentation</h1>
+
+    <div class="container">
+        <h2>Introduction</h2>
+        <p>This API allows interaction with WhatsApp using the Baileys library. With it, you can create multiple sessions, send messages, media, and manage statuses like "typing."</p>
+
+        <div class="note">
+            <strong>Note:</strong> This API is designed for use in a shared hosting environment and aims to be simple and efficient.
+        </div>
+
+        <div class="note">
+            <strong>Important:</strong> All API responses are returned in JSON format, including error messages and HTTP status codes.
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Getting Started</h2>
+        <ol>
+            <li>Create a session using the endpoint <code>/api/session/create</code></li>
+            <li>Use the endpoint <code>/api/session/{sessionName}/qr</code> to obtain the QR code</li>
+            <li>Scan the QR code with your WhatsApp</li>
+            <li>Now you can send messages and use other features</li>
+        </ol>
+    </div>
+
+    <div class="container">
+        <h2>Endpoints - Sessions</h2>
+
+        <div class="api-section">
+            <button class="collapsible">
+                <span class="method post">POST</span> <code>/api/session/create</code> <span class="json-badge">JSON</span>
+            </button>
+            <div class="content">
+                <div class="endpoint">
+                    <p>Creates a new WhatsApp session.</p>
+                    <h4>Parameters (JSON):</h4>
+                    <pre><code>{
+  "sessionName": "session-name" // Unique name for the session
+}</code></pre>
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "message": "Session created successfully",
+  "sessionName": "session-name",
+  "qrCode": "codigo-da-imagem-em-binario" 
+}</code></pre>
+                    <h4>Possible Errors:</h4>
+                    <pre><code>{
+  "error": "Session name is required",
+  "status": 400
+}
+
+{
+  "error": "Session already exists",
+  "status": 409
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <button class="collapsible">
+                <span class="method get">GET</span> <code>/api/session/{sessionName}/qr</code> <span class="json-badge">JSON</span>
+            </button>
+            <div class="content">
+                <div class="endpoint">
+                    <p>Retrieves the QR code for a session.</p>
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "sessionName": "session-name",
+  "qrCode": "/public/qrcodes/session-name.png"
+}</code></pre>
+                    <h4>Possible Errors:</h4>
+                    <pre><code>{
+  "error": "Session not found",
+  "status": 404
+}
+
+{
+  "error": "QR code not available",
+  "status": 404
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <button class="collapsible">
+                <span class="method get">GET</span> <code>/api/session/{sessionName}/status</code> <span class="json-badge">JSON</span>
+            </button>
+            <div class="content">
+                <div class="endpoint">
+                    <p>Checks the status of a session.</p>
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "sessionName": "session-name",
+  "status": "connected", // Or "disconnected", "qr_generated", etc.
+  "isActive": true
+}</code></pre>
+                    <h4>Possible Errors:</h4>
+                    <pre><code>{
+  "error": "Session not found",
+  "status": 404
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <button class="collapsible">
+                <span class="method get">GET</span> <code>/api/session</code> <span class="json-badge">JSON</span>
+            </button>
+            <div class="content">
+                <div class="endpoint">
+                    <p>Lists all registered sessions.</p>
+                    <h4>Response:</h4>
+                    <pre><code>[
+  {
+    "id": 1,
+    "session_name": "session-name",
+    "status": "connected",
+    "qr_code": "/public/qrcodes/session-name.png",
+    "created_at": "2023-01-01 12:00:00",
+    "updated_at": "2023-01-01 12:05:00",
+    "isActive": true
+  }
+]</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <button class="collapsible">
+                <span class="method post">POST</span> <code>/api/session/{sessionName}/close</code> <span class="json-badge">JSON</span>
+            </button>
+            <div class="content">
+                <div class="endpoint">
+                    <p>Closes an active session.</p>
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "message": "Session closed successfully",
+  "sessionName": "session-name"
+}</code></pre>
+                    <h4>Possible Errors:</h4>
+                    <pre><code>{
+  "error": "Session not found or already closed",
+  "status": 404
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <button class="collapsible">
+                <span class="method delete">DELETE</span> <code>/api/session/{sessionName}</code> <span class="json-badge">JSON</span>
+            </button>
+            <div class="content">
+                <div class="endpoint">
+                    <p>Completely removes a session.</p>
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "message": "Session removed successfully",
+  "sessionName": "session-name"
+}</code></pre>
+                    <h4>Possible Errors:</h4>
+                    <pre><code>{
+  "error": "Session not found",
+  "status": 404
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Endpoints - Messages</h2>
+
+        <div class="api-section">
+            <button class="collapsible">
+                <span class="method post">POST</span> <code>/api/message/send</code> <span class="json-badge">JSON</span>
+            </button>
+            <div class="content">
+                <div class="endpoint">
+                    <p>Sends a text message.</p>
+                    <h4>Parameters (JSON):</h4>
+                    <pre><code>{
+  "sessionName": "session-name",
+  "phone": "5511999999999", // Format: CountryCode + AreaCode + Number
+  "message": "Hello, this is a test message!"
+}</code></pre>
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "message": "Message sent successfully",
+  "phone": "5511999999999",
+  "sessionName": "session-name"
+}</code></pre>
+                    <h4>Possible Errors:</h4>
+                    <pre><code>{
+  "error": "Session not found or not connected",
+  "status": 404
+}
+
+{
+  "errors": [
+    {
+      "param": "phone",
+      "msg": "Phone number is required"
+    }
+  ],
+  "status": 400
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <button class="collapsible">
+                <span class="method post">POST</span> <code>/api/message/send-media</code> <span class="json-badge">JSON</span>
+            </button>
+            <div class="content">
+                <div class="endpoint">
+                    <p>Sends a message with media (image, document, etc.).</p>
+                    <h4>Parameters (multipart/form-data):</h4>
+                    <table>
+                        <tr>
+                            <th>Field</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>sessionName</td>
+                            <td>text</td>
+                            <td>Session name</td>
+                        </tr>
+                        <tr>
+                            <td>phone</td>
+                            <td>text</td>
+                            <td>Recipient's number (CountryCode+AreaCode+Number)</td>
+                        </tr>
+                        <tr>
+                            <td>caption</td>
+                            <td>text</td>
+                            <td>Caption for the media (optional)</td>
+                        </tr>
+                        <tr>
+                            <td>file</td>
+                            <td>file</td>
+                            <td>File to send (image, document, etc.)</td>
+                        </tr>
+                    </table>
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "message": "Media sent successfully",
+  "phone": "5511999999999",
+  "sessionName": "session-name",
+  "mediaType": "image/jpeg"
+}</code></pre>
+                    <h4>Possible Errors:</h4>
+                    <pre><code>{
+  "error": "No file uploaded",
+  "status": 400
+}
+
+{
+  "error": "Session not found or not connected",
+  "status": 404
+}
+
+{
+  "error": "Unsupported file type",
+  "status": 400
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Endpoints - Status</h2>
+
+        <div class="api-section">
+            <button class="collapsible">
+                <span class="method post">POST</span> <code>/api/status/typing</code> <span class="json-badge">JSON</span>
+            </button>
+            <div class="content">
+                <div class="endpoint">
+                    <p>Sends a "typing" status to a contact.</p>
+                    <h4>Parameters (JSON):</h4>
+                    <pre><code>{
+  "sessionName": "session-name",
+  "phone": "5511999999999",
+  "duration": 5000 // Duration in milliseconds (optional, default: 5000)
+}</code></pre>
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "message": "Typing status sent",
+  "phone": "5511999999999",
+  "sessionName": "session-name",
+  "duration": 5000
+}</code></pre>
+                    <h4>Possible Errors:</h4>
+                    <pre><code>{
+  "error": "Session not found or not connected",
+  "status": 404
+}
+
+{
+  "errors": [
+    {
+      "param": "duration",
+      "msg": "Duration must be between 1000 and 60000 milliseconds"
+    }
+  ],
+  "status": 400
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <button class="collapsible">
+                <span class="method post">POST</span> <code>/api/status/stop-typing</code> <span class="json-badge">JSON</span>
+            </button>
+            <div class="content">
+                <div class="endpoint">
+                    <p>Stops sending the "typing" status.</p>
+                    <h4>Parameters (JSON):</h4>
+                    <pre><code>{
+  "sessionName": "session-name",
+  "phone": "5511999999999"
+}</code></pre>
+                    <h4>Response:</h4>
+                    <pre><code>{
+  "message": "Typing status disabled",
+  "phone": "5511999999999",
+  "sessionName": "session-name"
+}</code></pre>
+                    <h4>Possible Errors:</h4>
+                    <pre><code>{
+  "error": "Session not found or not connected",
+  "status": 404
+}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Usage Examples</h2>
+
+        <h3>Create a Session and Send a Message</h3>
+        <pre><code>// 1. Create session
+fetch('/api/session/create', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ sessionName: 'my-session' })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+
+// 2. Obtain and display QR code
+// Access /api/session/my-session/qr and scan with WhatsApp
+
+// 3. Send text message
+fetch('/api/message/send', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    sessionName: 'my-session',
+    phone: '5511999999999',
+    message: 'Hello from WhatsApp API!'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+</code></pre>
+    </div>
+
+    <div class="container">
+        <h2>Important Notes</h2>
+        <ul>
+            <li>All API responses are in JSON format, including errors</li>
+            <li>HTTP status codes are used appropriately (200, 201, 400, 404, 500, etc.)</li>
+            <li>Do not start session names with numbers or special characters</li>
+            <li>Supported media formats: JPEG, PNG, GIF, MP4, PDF, DOC, DOCX, XLS, XLSX, TXT</li>
+            <li>Maximum file size for uploads is 10MB</li>
+            <li>The SQLite database is created automatically on first run</li>
+            <li>For shared hosting, ensure all folders have appropriate permissions</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        WhatsApp API using Baileys © 2025<br> Developed by Mário Costa - <a href="https://github.com/mariocosttaa">github.com/mariocosttaa</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var coll = document.getElementsByClassName("collapsible");
+            for (var i = 0; i < coll.length; i++) {
+                coll[i].addEventListener("click", function() {
+                    this.classList.toggle("active");
+                    var content = this.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

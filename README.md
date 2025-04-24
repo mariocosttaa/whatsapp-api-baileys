@@ -1,106 +1,127 @@
-WhatsApp API
-A lightweight and efficient WhatsApp API built using the Baileys library. This project enables developers to interact with WhatsApp programmatically, supporting features like creating sessions, sending text and media messages, and managing statuses such as "typing." It is designed to run in shared hosting environments, making it accessible for a wide range of use cases.
-Features
+# WhatsApp API 📱
 
-Session Management: Create, list, check status, close, or delete WhatsApp sessions.
-Messaging: Send text messages and media (images, documents, videos, etc.).
-Status Control: Simulate "typing" status for a contact.
-QR Code Authentication: Generate QR codes for session authentication.
-JSON Responses: All API responses, including errors, are returned in JSON format.
-Shared Hosting Compatibility: Optimized for environments with limited resources.
-SQLite Database: Automatically creates a lightweight database for session management.
+![Node.js](https://img.shields.io/badge/Node.js-18.x-green)
+![License](https://img.shields.io/badge/License-MIT-blue)
+![Baileys](https://img.shields.io/badge/Powered%20by-Baileys-orange)
 
-Documentation
-Full API documentation is available in the docs/index.html file. It includes detailed information on endpoints, parameters, responses, and usage examples. Open the file in a browser to explore the interactive documentation.
-Getting Started
-Prerequisites
+A lightweight and efficient **WhatsApp API** built with the [Baileys](https://github.com/adiwajshing/Baileys) library. This project empowers developers to interact with WhatsApp programmatically, enabling features like session management, text and media messaging, and status control (e.g., "typing"). Optimized for **shared hosting environments**, it’s perfect for a wide range of applications, from automation to customer engagement.
 
-Node.js (for running the backend server)
-A shared hosting environment or local server with write permissions
-WhatsApp account for scanning QR codes
+## ✨ Features
 
-Installation
+- **Session Management**: Create, list, check, close, or delete WhatsApp sessions.
+- **Messaging**: Send text messages and media (images, videos, documents, etc.).
+- **Status Control**: Simulate "typing" status for contacts.
+- **QR Code Authentication**: Generate QR codes for secure session authentication.
+- **JSON Responses**: All API responses, including errors, are returned in JSON format.
+- **Shared Hosting Ready**: Designed for resource-constrained environments.
+- **SQLite Database**: Lightweight, auto-initialized database for session management.
 
-Clone the repository:
-git clone https://github.com/mariocosttaa/whatsapp-api.git
-cd whatsapp-api
+## 📖 Documentation
 
+Comprehensive API documentation is available in [`docs/index.html`](./docs/index.html). It includes detailed endpoint descriptions, parameters, responses, and usage examples. Open it in a browser for an interactive experience.
 
-Install dependencies:
-npm install
+## 🚀 Getting Started
 
+### Prerequisites
 
-Configure folder permissions:
+- **Node.js** (v18.x or higher)
+- A **shared hosting environment** or local server with write permissions
+- A **WhatsApp account** for QR code scanning
 
-Ensure the public/qrcodes folder has write permissions for storing QR codes.
-Verify the SQLite database directory has write permissions.
+### Installation
 
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/mariocosttaa/whatsapp-api-baileys
+   cd whatsapp-api
+   ```
 
-Start the server:
-npm start
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
+3. **Configure permissions**:
+   - Ensure the `public/qrcodes/` folder has **write permissions** for QR code storage.
+   - Verify the SQLite database directory has **write permissions**.
 
-Access the API at http://your-server-address.
+4. **Start the server**:
+   ```bash
+   npm start
+   ```
 
+5. **Access the API** at `http://your-server-address`.
 
-Usage
+### Usage Example
 
-Create a Session:
-curl -X POST http://your-server-address/api/session/create \
--H "Content-Type: application/json" \
--d '{"sessionName": "my-session"}'
+1. **Create a session**:
+   ```bash
+   curl -X POST http://your-server-address/api/session/create \
+   -H "Content-Type: application/json" \
+   -d '{"sessionName": "my-session"}'
+   ```
+   Returns a QR code path (e.g., `/public/qrcodes/my-session.png`).
 
-This returns a QR code path for authentication.
+2. **Scan the QR code**:
+   - Access the QR code at `http://your-server-address/public/qrcodes/my-session.png`.
+   - Scan it using WhatsApp to authenticate the session.
 
-Scan the QR Code:Access the QR code at /public/qrcodes/my-session.png and scan it with WhatsApp.
+3. **Send a message**:
+   ```bash
+   curl -X POST http://your-server-address/api/message/send \
+   -H "Content-Type: application/json" \
+   -d '{"sessionName": "my-session", "phone": "5511999999999", "message": "Hello from WhatsApp API!"}'
+   ```
 
-Send a Message:
-curl -X POST http://your-server-address/api/message/send \
--H "Content-Type: application/json" \
--d '{"sessionName": "my-session", "phone": "5511999999999", "message": "Hello!"}'
+Explore more endpoints and examples in the [documentation](./docs/index.html).
 
+## 🛠️ API Endpoints
 
+### Sessions
+- `POST /api/session/create`: Create a new session with QR code.
+- `GET /api/session/{sessionName}/qr`: Retrieve QR code for authentication.
+- `GET /api/session/{sessionName}/status`: Check session status.
+- `GET /api/session`: List all sessions.
+- `POST /api/session/{sessionName}/close`: Close a session.
+- `DELETE /api/session/{sessionName}`: Delete a session.
 
-Refer to the documentation (docs/index.html) for more endpoints and examples.
-Endpoints
+### Messages
+- `POST /api/message/send`: Send a text message.
+- `POST /api/message/send-media`: Send media (images, documents, etc.).
 
-Sessions:
+### Status
+- `POST /api/status/typing`: Send "typing" status.
+- `POST /api/status/stop-typing`: Stop "typing" status.
 
-POST /api/session/create: Create a new session.
-GET /api/session/{sessionName}/qr: Get QR code for authentication.
-GET /api/session/{sessionName}/status: Check session status.
-GET /api/session: List all sessions.
-POST /api/session/{sessionName}/close: Close a session.
-DELETE /api/session/{sessionName}: Delete a session.
+## 📝 Important Notes
 
+- **Supported Media Formats**: JPEG, PNG, GIF, MP4, PDF, DOC, DOCX, XLS, XLSX, TXT.
+- **File Size Limit**: 10MB for media uploads.
+- **Session Names**: Avoid starting with numbers or special characters.
+- **HTTP Status Codes**: Consistent use of 200, 400, 404, etc.
+- **Database**: SQLite database is auto-created on first run.
+- **Hosting**: Ensure proper folder permissions in shared hosting environments.
 
-Messages:
+## 🤝 Contributing
 
-POST /api/message/send: Send a text message.
-POST /api/message/send-media: Send a media file.
+Contributions are welcome! To contribute:
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature/your-feature`).
+3. Commit your changes (`git commit -m "Add your feature"`).
+4. Push to the branch (`git push origin feature/your-feature`).
+5. Open a pull request.
 
+Please ensure your code follows the project’s coding style and includes tests.
 
-Status:
+## 🙌 Credits
 
-POST /api/status/typing: Send "typing" status.
-POST /api/status/stop-typing: Stop "typing" status.
+- **Powered by**: [Baileys](https://github.com/adiwajshing/Baileys) © 2025
+- **Developed by**: [Mário Costa](https://github.com/mariocosttaa)
 
+## 📜 License
 
+This project is licensed under the [MIT License](./LICENSE). See the [LICENSE](./LICENSE) file for details.
 
-Important Notes
+---
 
-Supported Media Formats: JPEG, PNG, GIF, MP4, PDF, DOC, DOCX, XLS, XLSX, TXT.
-File Size Limit: Maximum 10MB for media uploads.
-Session Names: Avoid starting names with numbers or special characters.
-HTTP Status Codes: Used consistently (e.g., 200, 400, 404).
-Database: SQLite database is created automatically on first run.
-
-Contributing
-Contributions are welcome! Please open an issue or submit a pull request on GitHub. Ensure your code follows the project's coding style and includes appropriate tests.
-Credits
-
-Built using Baileys © 2025
-Developed by Mário Costa
-
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
+Happy coding! 🚀

@@ -47,7 +47,7 @@ Comprehensive API documentation is available in [`docs/index.html`](./docs/index
 
 4. **Start the server**:
    ```bash
-   npm start
+   node src/index.js
    ```
 
 5. **Access the API** at `http://your-server-address`.

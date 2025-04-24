@@ -1,4 +1,6 @@
+# Antes
 
+Crie o subduminio, e faça o direcionamento do mesmo até a pasta do index.js
 
 # Instalação do npm sem sudo
 

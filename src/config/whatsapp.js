@@ -11,13 +11,18 @@ const sessions = {};
 const restoreSessions = async () => {
     try {
         const activeSessions = await SessionModel.getAllSessions();
+        if (!activeSessions || !Array.isArray(activeSessions)) return;
+        
         for (const session of activeSessions) {
             if (session.status === 'connected') {
                 await createSession(session.name, eventEmitter);
             }
         }
     } catch (error) {
-        console.error('Erro ao restaurar sessões:', error);
+        // Ignora erro se a tabela ainda não existir
+        if (!error.message?.includes('no such table')) {
+            console.error('Erro ao restaurar sessões:', error);
+        }
     }
 };
 

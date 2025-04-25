@@ -1,9 +1,25 @@
 const { default: makeWASocket, DisconnectReason, useMultiFileAuthState } = require('@whiskeysockets/baileys');
 const path = require('path');
 const fs = require('fs');
+const SessionModel = require('../models/SessionModel');
+const eventEmitter = require('../utils/eventEmitter');
 
 // Armazenar sessões ativas
 const sessions = {};
+
+// Restaurar sessões ativas ao iniciar o servidor
+const restoreSessions = async () => {
+    try {
+        const activeSessions = await SessionModel.getAllSessions();
+        for (const session of activeSessions) {
+            if (session.status === 'connected') {
+                await createSession(session.name, eventEmitter);
+            }
+        }
+    } catch (error) {
+        console.error('Erro ao restaurar sessões:', error);
+    }
+};
 
 // Caminho para armazenar arquivos de autenticação
 const getSessionFolderPath = (sessionName) => {
@@ -102,10 +118,14 @@ const getAllSessions = () => {
     return Object.keys(sessions);
 };
 
+// Restaurar sessões ao exportar o módulo
+restoreSessions();
+
 module.exports = {
     createSession,
     getSession,
     sessionExists,
     closeSession,
-    getAllSessions
+    getAllSessions,
+    restoreSessions
 };

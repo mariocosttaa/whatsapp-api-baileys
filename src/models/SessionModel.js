@@ -86,7 +86,7 @@ class SessionModel {
         return new Promise((resolve, reject) => {
             const db = getDbConnection();
 
-            db.all('SELECT * FROM sessions', (err, rows) => {
+            db.all('SELECT * FROM sessions', [], (err, rows) => {
                 db.close();
 
                 if (err) {
@@ -113,6 +113,27 @@ class SessionModel {
                     }
 
                     resolve({ deleted: this.changes > 0 });
+                }
+            );
+        });
+    }
+
+    // Verificar se uma sessão está conectada
+    static async isSessionConnected(sessionName) {
+        return new Promise((resolve, reject) => {
+            const db = getDbConnection();
+
+            db.get(
+                'SELECT status FROM sessions WHERE session_name = ?',
+                [sessionName],
+                (err, row) => {
+                    db.close();
+
+                    if (err) {
+                        return reject(err);
+                    }
+
+                    resolve(row && row.status === 'connected');
                 }
             );
         });

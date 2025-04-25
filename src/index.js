@@ -7,6 +7,7 @@ const apiRoutes = require('./routes/api');
 const webRoutes = require('./routes/web');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
+const CleanupService = require('./services/cleanupService');
 require('dotenv').config();
 
 const app = express(); 
@@ -58,9 +59,10 @@ if (!fs.existsSync(qrcodesDir)) {
     fs.mkdirSync(qrcodesDir, { recursive: true });
 }
 
-// Debug middleware para verificar o corpo das requisições
+// Debug middleware para verificar as requisições
 app.use((req, res, next) => {
-    logger.info(`Request body: ${JSON.stringify(req.body)}`);
+    const requestInfo = `Request: ${req.method} ${req.path} - Body: ${JSON.stringify(req.body)}`;
+    logger.info(requestInfo);
     next();
 });
 
@@ -81,4 +83,8 @@ app.use(errorHandler);
 app.listen(PORT, () => {
     logger.info(`Server running on port ${PORT}`);
     logger.info(`Documentação disponível em: ${process.env.APP_URL || 'http://localhost:3000'}`);
+    
+    // Iniciar serviço de limpeza de QR codes
+    CleanupService.startCleanupInterval();
+    logger.info('Serviço de limpeza de QR codes iniciado');
 });

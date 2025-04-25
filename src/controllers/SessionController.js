@@ -58,10 +58,14 @@ class SessionController {
             // Atualizar o QR code no banco de dados
             await SessionModel.updateSessionQR(sessionName, qrCode);
 
-            return res.status(201).json({
+            const APP_URL = process.env.APP_URL || 'http://localhost:3000';
+            const qrUrl = `${APP_URL}/qrcodes/${sessionName}.png`;
+
+            return res.json({
                 message: 'Sessão criada com sucesso',
                 sessionName,
-                qrCode
+                qrCode,
+                qrCodeUrl: qrUrl
             });
         } catch (error) {
             console.error('Erro ao criar sessão:', error);

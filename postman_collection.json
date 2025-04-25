@@ -2,19 +2,27 @@
     "info": {
         "_postman_id": "f7a9c3b2-6e7f-4c9a-9d8e-3a1b2c4d5e6f",
         "name": "WhatsApp API",
-        "description": "A Postman collection for testing the WhatsApp API built with Baileys. Includes endpoints for session management, messaging, and status control.",
+        "description": "A Postman collection for testing the WhatsApp API built with Baileys. Includes endpoints for session management, messaging, status control, and number verification.",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
-    "item": [{
+    "item": [
+        {
             "name": "Sessions",
-            "item": [{
+            "item": [
+                {
                     "name": "Create Session",
                     "request": {
                         "method": "POST",
-                        "header": [{
-                            "key": "Content-Type",
-                            "value": "application/json"
-                        }],
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{apiKey}}"
+                            }
+                        ],
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"sessionName\": \"{{sessionName}}\"\n}"
@@ -22,39 +30,58 @@
                         "url": {
                             "raw": "{{baseUrl}}/session/create",
                             "host": ["{{baseUrl}}"],
-                            "path": ["api", "session", "create"]
+                            "path": ["session", "create"]
                         },
-                        "description": "Creates a new WhatsApp session and returns the QR code path."
+                        "description": "Creates a new WhatsApp session and returns the QR code as binary image data."
                     },
-                    "response": [{
+                    "response": [
+                        {
                             "name": "Success",
                             "status": "Created",
                             "code": 201,
-                            "body": "{\n  \"message\": \"Session created successfully\",\n  \"sessionName\": \"{{sessionName}}\",\n  \"qrCode\": \"/public/qrcodes/{{sessionName}}.png\"\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "body": "{\n  \"message\": \"Session created successfully\",\n  \"sessionName\": \"{{sessionName}}\",\n  \"qrCode\": \"binary-image-data\"\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
                             "name": "Bad Request",
                             "status": "Bad Request",
                             "code": 400,
                             "body": "{\n  \"error\": \"Session name is required\",\n  \"status\": 400\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
                             "name": "Conflict",
                             "status": "Conflict",
                             "code": 409,
                             "body": "{\n  \"error\": \"Session already exists\",\n  \"status\": 409\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Unauthorized",
+                            "status": "Unauthorized",
+                            "code": 401,
+                            "body": "{\n  \"error\": \"Unauthorized\",\n  \"status\": 401\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         }
                     ]
                 },
@@ -62,43 +89,67 @@
                     "name": "Get QR Code",
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{apiKey}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{baseUrl}}/session/{{sessionName}}/qr",
                             "host": ["{{baseUrl}}"],
-                            "path": ["api", "session", "{{sessionName}}", "qr"]
+                            "path": ["session", "{{sessionName}}", "qr"]
                         },
                         "description": "Retrieves the QR code for a session."
                     },
-                    "response": [{
+                    "response": [
+                        {
                             "name": "Success",
                             "status": "OK",
                             "code": 200,
                             "body": "{\n  \"sessionName\": \"{{sessionName}}\",\n  \"qrCode\": \"/public/qrcodes/{{sessionName}}.png\"\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
-                            "name": "Not Found",
+                            "name": "Not Found - Session",
                             "status": "Not Found",
                             "code": 404,
                             "body": "{\n  \"error\": \"Session not found\",\n  \"status\": 404\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
-                            "name": "QR Not Available",
+                            "name": "Not Found - QR Code",
                             "status": "Not Found",
                             "code": 404,
                             "body": "{\n  \"error\": \"QR code not available\",\n  \"status\": 404\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Unauthorized",
+                            "status": "Unauthorized",
+                            "code": 401,
+                            "body": "{\n  \"error\": \"Unauthorized\",\n  \"status\": 401\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         }
                     ]
                 },
@@ -106,33 +157,55 @@
                     "name": "Check Session Status",
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{apiKey}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{baseUrl}}/session/{{sessionName}}/status",
                             "host": ["{{baseUrl}}"],
-                            "path": ["api", "session", "{{sessionName}}", "status"]
+                            "path": ["session", "{{sessionName}}", "status"]
                         },
                         "description": "Checks the status of a session."
                     },
-                    "response": [{
+                    "response": [
+                        {
                             "name": "Success",
                             "status": "OK",
                             "code": 200,
                             "body": "{\n  \"sessionName\": \"{{sessionName}}\",\n  \"status\": \"connected\",\n  \"isActive\": true\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
                             "name": "Not Found",
                             "status": "Not Found",
                             "code": 404,
                             "body": "{\n  \"error\": \"Session not found\",\n  \"status\": 404\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Unauthorized",
+                            "status": "Unauthorized",
+                            "code": 401,
+                            "body": "{\n  \"error\": \"Unauthorized\",\n  \"status\": 401\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         }
                     ]
                 },
@@ -140,33 +213,60 @@
                     "name": "List All Sessions",
                     "request": {
                         "method": "GET",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{apiKey}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{baseUrl}}/session",
                             "host": ["{{baseUrl}}"],
-                            "path": ["api", "session"]
+                            "path": ["session"]
                         },
                         "description": "Lists all registered sessions."
                     },
-                    "response": [{
-                        "name": "Success",
-                        "status": "OK",
-                        "code": 200,
-                        "body": "[\n  {\n    \"id\": 1,\n    \"session_name\": \"{{sessionName}}\",\n    \"status\": \"connected\",\n    \"qr_code\": \"/public/qrcodes/{{sessionName}}.png\",\n    \"created_at\": \"2023-01-01 12:00:00\",\n    \"updated_at\": \"2023-01-01 12:05:00\",\n    \"isActive\": true\n  }\n]",
-                        "header": [{
-                            "key": "Content-Type",
-                            "value": "application/json"
-                        }]
-                    }]
+                    "response": [
+                        {
+                            "name": "Success",
+                            "status": "OK",
+                            "code": 200,
+                            "body": "[\n  {\n    \"id\": 1,\n    \"session_name\": \"{{sessionName}}\",\n    \"status\": \"connected\",\n    \"qr_code\": \"/public/qrcodes/{{sessionName}}.png\",\n    \"created_at\": \"2023-01-01 12:00:00\",\n    \"updated_at\": \"2023-01-01 12:05:00\",\n    \"isActive\": true\n  }\n]",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Unauthorized",
+                            "status": "Unauthorized",
+                            "code": 401,
+                            "body": "{\n  \"error\": \"Unauthorized\",\n  \"status\": 401\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        }
+                    ]
                 },
                 {
                     "name": "Close Session",
                     "request": {
                         "method": "POST",
-                        "header": [{
-                            "key": "Content-Type",
-                            "value": "application/json"
-                        }],
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{apiKey}}"
+                            }
+                        ],
                         "body": {
                             "mode": "raw",
                             "raw": "{}"
@@ -174,29 +274,46 @@
                         "url": {
                             "raw": "{{baseUrl}}/session/{{sessionName}}/close",
                             "host": ["{{baseUrl}}"],
-                            "path": ["api", "session", "{{sessionName}}", "close"]
+                            "path": ["session", "{{sessionName}}", "close"]
                         },
                         "description": "Closes an active session."
                     },
-                    "response": [{
+                    "response": [
+                        {
                             "name": "Success",
                             "status": "OK",
                             "code": 200,
                             "body": "{\n  \"message\": \"Session closed successfully\",\n  \"sessionName\": \"{{sessionName}}\"\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
                             "name": "Not Found",
                             "status": "Not Found",
                             "code": 404,
                             "body": "{\n  \"error\": \"Session not found or already closed\",\n  \"status\": 404\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Unauthorized",
+                            "status": "Unauthorized",
+                            "code": 401,
+                            "body": "{\n  \"error\": \"Unauthorized\",\n  \"status\": 401\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         }
                     ]
                 },
@@ -204,33 +321,55 @@
                     "name": "Delete Session",
                     "request": {
                         "method": "DELETE",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{apiKey}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{baseUrl}}/session/{{sessionName}}",
                             "host": ["{{baseUrl}}"],
-                            "path": ["api", "session", "{{sessionName}}"]
+                            "path": ["session", "{{sessionName}}"]
                         },
                         "description": "Completely removes a session."
                     },
-                    "response": [{
+                    "response": [
+                        {
                             "name": "Success",
                             "status": "OK",
                             "code": 200,
                             "body": "{\n  \"message\": \"Session removed successfully\",\n  \"sessionName\": \"{{sessionName}}\"\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
                             "name": "Not Found",
                             "status": "Not Found",
                             "code": 404,
                             "body": "{\n  \"error\": \"Session not found\",\n  \"status\": 404\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Unauthorized",
+                            "status": "Unauthorized",
+                            "code": 401,
+                            "body": "{\n  \"error\": \"Unauthorized\",\n  \"status\": 401\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         }
                     ]
                 }
@@ -238,14 +377,21 @@
         },
         {
             "name": "Messages",
-            "item": [{
+            "item": [
+                {
                     "name": "Send Text Message",
                     "request": {
                         "method": "POST",
-                        "header": [{
-                            "key": "Content-Type",
-                            "value": "application/json"
-                        }],
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{apiKey}}"
+                            }
+                        ],
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"sessionName\": \"{{sessionName}}\",\n  \"phone\": \"{{phone}}\",\n  \"message\": \"Hello, this is a test message!\"\n}"
@@ -253,39 +399,58 @@
                         "url": {
                             "raw": "{{baseUrl}}/message/send",
                             "host": ["{{baseUrl}}"],
-                            "path": ["api", "message", "send"]
+                            "path": ["message", "send"]
                         },
                         "description": "Sends a text message."
                     },
-                    "response": [{
+                    "response": [
+                        {
                             "name": "Success",
                             "status": "OK",
                             "code": 200,
                             "body": "{\n  \"message\": \"Message sent successfully\",\n  \"phone\": \"{{phone}}\",\n  \"sessionName\": \"{{sessionName}}\"\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
                             "name": "Not Found",
                             "status": "Not Found",
                             "code": 404,
                             "body": "{\n  \"error\": \"Session not found or not connected\",\n  \"status\": 404\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
                             "name": "Bad Request",
                             "status": "Bad Request",
                             "code": 400,
                             "body": "{\n  \"errors\": [\n    {\n      \"param\": \"phone\",\n      \"msg\": \"Phone number is required\"\n    }\n  ],\n  \"status\": 400\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Unauthorized",
+                            "status": "Unauthorized",
+                            "code": 401,
+                            "body": "{\n  \"error\": \"Unauthorized\",\n  \"status\": 401\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         }
                     ]
                 },
@@ -293,10 +458,16 @@
                     "name": "Send Media Message",
                     "request": {
                         "method": "POST",
-                        "header": [],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{apiKey}}"
+                            }
+                        ],
                         "body": {
                             "mode": "formdata",
-                            "formdata": [{
+                            "formdata": [
+                                {
                                     "key": "sessionName",
                                     "value": "{{sessionName}}",
                                     "type": "text"
@@ -321,49 +492,70 @@
                         "url": {
                             "raw": "{{baseUrl}}/message/send-media",
                             "host": ["{{baseUrl}}"],
-                            "path": ["api", "message", "send-media"]
+                            "path": ["message", "send-media"]
                         },
                         "description": "Sends a message with media (image, document, etc.)."
                     },
-                    "response": [{
+                    "response": [
+                        {
                             "name": "Success",
                             "status": "OK",
                             "code": 200,
                             "body": "{\n  \"message\": \"Media sent successfully\",\n  \"phone\": \"{{phone}}\",\n  \"sessionName\": \"{{sessionName}}\",\n  \"mediaType\": \"image/jpeg\"\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
                             "name": "Bad Request - No File",
                             "status": "Bad Request",
                             "code": 400,
                             "body": "{\n  \"error\": \"No file uploaded\",\n  \"status\": 400\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
                             "name": "Not Found",
                             "status": "Not Found",
                             "code": 404,
                             "body": "{\n  \"error\": \"Session not found or not connected\",\n  \"status\": 404\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
                             "name": "Bad Request - Unsupported File",
                             "status": "Bad Request",
                             "code": 400,
                             "body": "{\n  \"error\": \"Unsupported file type\",\n  \"status\": 400\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Unauthorized",
+                            "status": "Unauthorized",
+                            "code": 401,
+                            "body": "{\n  \"error\": \"Unauthorized\",\n  \"status\": 401\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         }
                     ]
                 }
@@ -371,14 +563,21 @@
         },
         {
             "name": "Status",
-            "item": [{
+            "item": [
+                {
                     "name": "Send Typing Status",
                     "request": {
                         "method": "POST",
-                        "header": [{
-                            "key": "Content-Type",
-                            "value": "application/json"
-                        }],
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{apiKey}}"
+                            }
+                        ],
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"sessionName\": \"{{sessionName}}\",\n  \"phone\": \"{{phone}}\",\n  \"duration\": 5000\n}"
@@ -386,39 +585,58 @@
                         "url": {
                             "raw": "{{baseUrl}}/status/typing",
                             "host": ["{{baseUrl}}"],
-                            "path": ["api", "status", "typing"]
+                            "path": ["status", "typing"]
                         },
                         "description": "Sends a 'typing' status to a contact."
                     },
-                    "response": [{
+                    "response": [
+                        {
                             "name": "Success",
                             "status": "OK",
                             "code": 200,
                             "body": "{\n  \"message\": \"Typing status sent\",\n  \"phone\": \"{{phone}}\",\n  \"sessionName\": \"{{sessionName}}\",\n  \"duration\": 5000\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
                             "name": "Not Found",
                             "status": "Not Found",
                             "code": 404,
                             "body": "{\n  \"error\": \"Session not found or not connected\",\n  \"status\": 404\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
                             "name": "Bad Request",
                             "status": "Bad Request",
                             "code": 400,
                             "body": "{\n  \"errors\": [\n    {\n      \"param\": \"duration\",\n      \"msg\": \"Duration must be between 1000 and 60000 milliseconds\"\n    }\n  ],\n  \"status\": 400\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Unauthorized",
+                            "status": "Unauthorized",
+                            "code": 401,
+                            "body": "{\n  \"error\": \"Unauthorized\",\n  \"status\": 401\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         }
                     ]
                 },
@@ -426,10 +644,16 @@
                     "name": "Stop Typing Status",
                     "request": {
                         "method": "POST",
-                        "header": [{
-                            "key": "Content-Type",
-                            "value": "application/json"
-                        }],
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{apiKey}}"
+                            }
+                        ],
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"sessionName\": \"{{sessionName}}\",\n  \"phone\": \"{{phone}}\"\n}"
@@ -437,36 +661,137 @@
                         "url": {
                             "raw": "{{baseUrl}}/status/stop-typing",
                             "host": ["{{baseUrl}}"],
-                            "path": ["api", "status", "stop-typing"]
+                            "path": ["status", "stop-typing"]
                         },
                         "description": "Stops sending the 'typing' status."
                     },
-                    "response": [{
+                    "response": [
+                        {
                             "name": "Success",
                             "status": "OK",
                             "code": 200,
                             "body": "{\n  \"message\": \"Typing status disabled\",\n  \"phone\": \"{{phone}}\",\n  \"sessionName\": \"{{sessionName}}\"\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         },
                         {
                             "name": "Not Found",
                             "status": "Not Found",
                             "code": 404,
                             "body": "{\n  \"error\": \"Session not found or not connected\",\n  \"status\": 404\n}",
-                            "header": [{
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }]
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Unauthorized",
+                            "status": "Unauthorized",
+                            "code": 401,
+                            "body": "{\n  \"error\": \"Unauthorized\",\n  \"status\": 401\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Numbers",
+            "item": [
+                {
+                    "name": "Verify Number",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{apiKey}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/number/verify?sessionName={{sessionName}}&number={{phone}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["number", "verify"],
+                            "query": [
+                                {
+                                    "key": "sessionName",
+                                    "value": "{{sessionName}}"
+                                },
+                                {
+                                    "key": "number",
+                                    "value": "{{phone}}"
+                                }
+                            ]
+                        },
+                        "description": "Verifies if a number exists on WhatsApp."
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "status": "OK",
+                            "code": 200,
+                            "body": "{\n  \"exists\": true,\n  \"number\": \"{{phone}}\",\n  \"sessionName\": \"{{sessionName}}\"\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Not Found",
+                            "status": "Not Found",
+                            "code": 404,
+                            "body": "{\n  \"error\": \"Session not found or not connected\",\n  \"status\": 404\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Bad Request",
+                            "status": "Bad Request",
+                            "code": 400,
+                            "body": "{\n  \"errors\": [\n    {\n      \"param\": \"number\",\n      \"msg\": \"Number is required\"\n    }\n  ],\n  \"status\": 400\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Unauthorized",
+                            "status": "Unauthorized",
+                            "code": 401,
+                            "body": "{\n  \"error\": \"Unauthorized\",\n  \"status\": 401\n}",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ]
                         }
                     ]
                 }
             ]
         }
     ],
-    "variable": [{
+    "variable": [
+        {
             "key": "baseUrl",
             "value": "http://localhost:3000",
             "description": "Base URL of the WhatsApp API server"
@@ -480,6 +805,11 @@
             "key": "phone",
             "value": "5511999999999",
             "description": "Recipient phone number in format: CountryCode+AreaCode+Number"
+        },
+        {
+            "key": "apiKey",
+            "value": "YOUR_API_KEY",
+            "description": "API key for authorization"
         }
     ]
 }

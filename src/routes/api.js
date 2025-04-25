@@ -9,8 +9,12 @@ const validateApiKey = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Apply API key validation to all routes
-router.use(validateApiKey);
+router.get('/', (req, res) => {
+    res.json({ welcome: 'Welcome to MarioWhatsApi', version: '1.0' });
+});
+
+// Apply API key validation to all routes, except /
+router.use('/api', validateApiKey);
 
 // Message Routes
 router.post('/message/send', validators.sendMessage, MessageController.sendText);

@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const validateApiKey = (req, res, next) => {
-    const apiKey = req.header('API_KEY');
+    const apiKey = req.header('Authorization');
 
     if (!apiKey || apiKey !== process.env.API_KEY) {
         return res.status(401).json({

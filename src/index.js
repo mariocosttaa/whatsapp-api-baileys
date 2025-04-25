@@ -12,7 +12,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Inicializar o banco de dados
-initDatabase();
+(async () => {
+    try {
+        await initDatabase();
+    } catch (error) {
+        console.error('Failed to initialize database:', error);
+        process.exit(1);
+    }
+})();
 
 // Middleware
 app.use(cors());

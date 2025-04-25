@@ -21,8 +21,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
 // Rotas
-app.use('/api', apiRoutes);
 app.use('/', webRoutes);
+app.use('/', apiRoutes);
 
 
 // Middleware para tratar rotas não encontradas

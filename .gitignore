@@ -3,3 +3,7 @@
 /database.sqlite
 src/storage/*.log
 .database.sqlite
+server.log
+sessions/*
+/public/qrcodes/*
+/uploads/*

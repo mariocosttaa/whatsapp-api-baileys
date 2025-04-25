@@ -2,10 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { initDatabase } = require('./database/sqlite');
-const sessionRoutes = require('./routes/session');
-const messageRoutes = require('./routes/message');
-const statusRoutes = require('./routes/status');
+const apiRoutes = require('./routes/api');
+const webRoutes = require('./routes/web');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
+const logger = require('./utils/logger');
 require('dotenv').config();
 
 const app = express();
@@ -21,14 +21,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
 // Rotas
-app.use('/api/session', sessionRoutes);
-app.use('/api/message', messageRoutes);
-app.use('/api/status', statusRoutes);
+app.use('/api', apiRoutes);
+app.use('/', webRoutes);
 
-// Rota para a documentação da API
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
-});
 
 // Middleware para tratar rotas não encontradas
 app.use(notFoundHandler);
@@ -38,6 +33,6 @@ app.use(errorHandler);
 
 // Iniciar servidor
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Documentação disponível em: http://localhost:${PORT}`);
+    logger.info(`Server running on port ${PORT}`);
+    logger.info(`Documentação disponível em: http://localhost:${PORT}`);
 });

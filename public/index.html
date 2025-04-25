@@ -171,6 +171,19 @@
             font-size: 12px;
             margin-left: 8px;
         }
+        
+        .code-example {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .code-example h4 {
+            margin: 0 0 10px 0;
+            color: #075e54;
+        }
     </style>
 </head>
 
@@ -193,11 +206,18 @@
     <div class="container">
         <h2>Getting Started</h2>
         <ol>
-            <li>Create a session using the endpoint <code>/api/session/create</code></li>
-            <li>Use the endpoint <code>/api/session/{sessionName}/qr</code> to obtain the QR code</li>
-            <li>Scan the QR code with your WhatsApp</li>
-            <li>Now you can send messages and use other features</li>
+            <li>Obtain your <code>API_KEY</code> from the administrator.</li>
+            <li>Create a session using the endpoint <code>/api/session/create</code> with the <code>API_KEY</code> in the header.</li>
+            <li>Use the endpoint <code>/api/session/{sessionName}/qr</code> to obtain the QR code.</li>
+            <li>Scan the QR code with your WhatsApp.</li>
+            <li>Now you can send messages and use other features.</li>
         </ol>
+    </div>
+
+    <div class="container">
+        <h2>API_KEY</h2>
+        <p>All API requests require the <code>API_KEY</code> to be passed in the header for authorization. The header should be named <code>Authorization</code> and the value should be <code>Bearer YOUR_API_KEY</code>.</p>
+        <p>If the <code>API_KEY</code> is not provided or is invalid, the API will return a 401 Unauthorized error.</p>
     </div>
 
     <div class="container">
@@ -218,7 +238,7 @@
                     <pre><code>{
   "message": "Session created successfully",
   "sessionName": "session-name",
-  "qrCode": "codigo-da-imagem-em-binario" 
+  "qrCode": "binary-image-data"
 }</code></pre>
                     <h4>Possible Errors:</h4>
                     <pre><code>{
@@ -230,6 +250,50 @@
   "error": "Session already exists",
   "status": 409
 }</code></pre>
+                    <h4>Usage Examples:</h4>
+                    <div class="code-example">
+                        <h4>curl</h4>
+                        <pre><code>curl -X POST https://your-api-url.com/api/session/create \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{"sessionName": "session-name"}'</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>PHP</h4>
+                        <pre><code>$apiKey = 'YOUR_API_KEY';
+$sessionName = 'session-name';
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://your-api-url.com/api/session/create');
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['sessionName' => $sessionName]));
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'Authorization: Bearer ' . $apiKey
+]);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>JavaScript</h4>
+                        <pre><code>const apiKey = 'YOUR_API_KEY';
+const sessionName = 'session-name';
+
+fetch('https://your-api-url.com/api/session/create', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${apiKey}`
+  },
+  body: JSON.stringify({ sessionName })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code></pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -256,6 +320,43 @@
   "error": "QR code not available",
   "status": 404
 }</code></pre>
+                    <h4>Usage Examples:</h4>
+                    <div class="code-example">
+                        <h4>curl</h4>
+                        <pre><code>curl -X GET https://your-api-url.com/api/session/session-name/qr \
+  -H "Authorization: Bearer YOUR_API_KEY"</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>PHP</h4>
+                        <pre><code>$apiKey = 'YOUR_API_KEY';
+$sessionName = 'session-name';
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://your-api-url.com/api/session/' . $sessionName . '/qr');
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer ' . $apiKey
+]);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>JavaScript</h4>
+                        <pre><code>const apiKey = 'YOUR_API_KEY';
+const sessionName = 'session-name';
+
+fetch(`https://your-api-url.com/api/session/${sessionName}/qr`, {
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${apiKey}`
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code></pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -278,6 +379,43 @@
   "error": "Session not found",
   "status": 404
 }</code></pre>
+                    <h4>Usage Examples:</h4>
+                    <div class="code-example">
+                        <h4>curl</h4>
+                        <pre><code>curl -X GET https://your-api-url.com/api/session/session-name/status \
+  -H "Authorization: Bearer YOUR_API_KEY"</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>PHP</h4>
+                        <pre><code>$apiKey = 'YOUR_API_KEY';
+$sessionName = 'session-name';
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://your-api-url.com/api/session/' . $sessionName . '/status');
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer ' . $apiKey
+]);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>JavaScript</h4>
+                        <pre><code>const apiKey = 'YOUR_API_KEY';
+const sessionName = 'session-name';
+
+fetch(`https://your-api-url.com/api/session/${sessionName}/status`, {
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${apiKey}`
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code></pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -301,6 +439,41 @@
     "isActive": true
   }
 ]</code></pre>
+                    <h4>Usage Examples:</h4>
+                    <div class="code-example">
+                        <h4>curl</h4>
+                        <pre><code>curl -X GET https://your-api-url.com/api/session \
+  -H "Authorization: Bearer YOUR_API_KEY"</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>PHP</h4>
+                        <pre><code>$apiKey = 'YOUR_API_KEY';
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://your-api-url.com/api/session');
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer ' . $apiKey
+]);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>JavaScript</h4>
+                        <pre><code>const apiKey = 'YOUR_API_KEY';
+
+fetch('https://your-api-url.com/api/session', {
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${apiKey}`
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code></pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -322,6 +495,44 @@
   "error": "Session not found or already closed",
   "status": 404
 }</code></pre>
+                    <h4>Usage Examples:</h4>
+                    <div class="code-example">
+                        <h4>curl</h4>
+                        <pre><code>curl -X POST https://your-api-url.com/api/session/session-name/close \
+  -H "Authorization: Bearer YOUR_API_KEY"</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>PHP</h4>
+                        <pre><code>$apiKey = 'YOUR_API_KEY';
+$sessionName = 'session-name';
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://your-api-url.com/api/session/' . $sessionName . '/close');
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer ' . $apiKey
+]);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>JavaScript</h4>
+                        <pre><code>const apiKey = 'YOUR_API_KEY';
+const sessionName = 'session-name';
+
+fetch(`https://your-api-url.com/api/session/${sessionName}/close`, {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${apiKey}`
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code></pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -343,6 +554,44 @@
   "error": "Session not found",
   "status": 404
 }</code></pre>
+                    <h4>Usage Examples:</h4>
+                    <div class="code-example">
+                        <h4>curl</h4>
+                        <pre><code>curl -X DELETE https://your-api-url.com/api/session/session-name \
+  -H "Authorization: Bearer YOUR_API_KEY"</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>PHP</h4>
+                        <pre><code>$apiKey = 'YOUR_API_KEY';
+$sessionName = 'session-name';
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://your-api-url.com/api/session/' . $sessionName);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer ' . $apiKey
+]);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>JavaScript</h4>
+                        <pre><code>const apiKey = 'YOUR_API_KEY';
+const sessionName = 'session-name';
+
+fetch(`https://your-api-url.com/api/session/${sessionName}`, {
+  method: 'DELETE',
+  headers: {
+    'Authorization': `Bearer ${apiKey}`
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code></pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -385,6 +634,62 @@
   ],
   "status": 400
 }</code></pre>
+                    <h4>Usage Examples:</h4>
+                    <div class="code-example">
+                        <h4>curl</h4>
+                        <pre><code>curl -X POST https://your-api-url.com/api/message/send \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionName": "session-name",
+    "phone": "5511999999999",
+    "message": "Hello, this is a test message!"
+  }'</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>PHP</h4>
+                        <pre><code>$apiKey = 'YOUR_API_KEY';
+$data = [
+    'sessionName' => 'session-name',
+    'phone' => '5511999999999',
+    'message' => 'Hello, this is a test message!'
+];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://your-api-url.com/api/message/send');
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'Authorization: Bearer ' . $apiKey
+]);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>JavaScript</h4>
+                        <pre><code>const apiKey = 'YOUR_API_KEY';
+const data = {
+  sessionName: 'session-name',
+  phone: '5511999999999',
+  message: 'Hello, this is a test message!'
+};
+
+fetch('https://your-api-url.com/api/message/send', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${apiKey}`
+  },
+  body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code></pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -446,6 +751,67 @@
   "error": "Unsupported file type",
   "status": 400
 }</code></pre>
+                    <h4>Usage Examples:</h4>
+                    <div class="code-example">
+                        <h4>curl</h4>
+                        <pre><code>curl -X POST https://your-api-url.com/api/message/send-media \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F "sessionName=session-name" \
+  -F "phone=5511999999999" \
+  -F "caption=This is a test image" \
+  -F "file=@/path/to/image.jpg"</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>PHP</h4>
+                        <pre><code>$apiKey = 'YOUR_API_KEY';
+$sessionName = 'session-name';
+$phone = '5511999999999';
+$caption = 'This is a test image';
+$filePath = '/path/to/image.jpg';
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://your-api-url.com/api/message/send-media');
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer ' . $apiKey
+]);
+curl_setopt($ch, CURLOPT_POSTFIELDS, [
+    'sessionName' => $sessionName,
+    'phone' => $phone,
+    'caption' => $caption,
+    'file' => curl_file_create($filePath)
+]);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>JavaScript (using FormData)</h4>
+                        <pre><code>const apiKey = 'YOUR_API_KEY';
+const sessionName = 'session-name';
+const phone = '5511999999999';
+const caption = 'This is a test image';
+const fileInput = document.querySelector('input[type="file"]'); // Assuming there's a file input
+
+const formData = new FormData();
+formData.append('sessionName', sessionName);
+formData.append('phone', phone);
+formData.append('caption', caption);
+formData.append('file', fileInput.files[0]);
+
+fetch('https://your-api-url.com/api/message/send-media', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${apiKey}`
+  },
+  body: formData
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code></pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -489,6 +855,62 @@
   ],
   "status": 400
 }</code></pre>
+                    <h4>Usage Examples:</h4>
+                    <div class="code-example">
+                        <h4>curl</h4>
+                        <pre><code>curl -X POST https://your-api-url.com/api/status/typing \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionName": "session-name",
+    "phone": "5511999999999",
+    "duration": 5000
+  }'</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>PHP</h4>
+                        <pre><code>$apiKey = 'YOUR_API_KEY';
+$data = [
+    'sessionName' => 'session-name',
+    'phone' => '5511999999999',
+    'duration' => 5000
+];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://your-api-url.com/api/status/typing');
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'Authorization: Bearer ' . $apiKey
+]);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>JavaScript</h4>
+                        <pre><code>const apiKey = 'YOUR_API_KEY';
+const data = {
+  sessionName: 'session-name',
+  phone: '5511999999999',
+  duration: 5000
+};
+
+fetch('https://your-api-url.com/api/status/typing', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${apiKey}`
+  },
+  body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code></pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -516,6 +938,59 @@
   "error": "Session not found or not connected",
   "status": 404
 }</code></pre>
+                    <h4>Usage Examples:</h4>
+                    <div class="code-example">
+                        <h4>curl</h4>
+                        <pre><code>curl -X POST https://your-api-url.com/api/status/stop-typing \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionName": "session-name",
+    "phone": "5511999999999"
+  }'</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>PHP</h4>
+                        <pre><code>$apiKey = 'YOUR_API_KEY';
+$data = [
+    'sessionName' => 'session-name',
+    'phone' => '5511999999999'
+];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://your-api-url.com/api/status/stop-typing');
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'Authorization: Bearer ' . $apiKey
+]);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;</code></pre>
+                    </div>
+                    <div class="code-example">
+                        <h4>JavaScript</h4>
+                        <pre><code>const apiKey = 'YOUR_API_KEY';
+const data = {
+  sessionName: 'session-name',
+  phone: '5511999999999'
+};
+
+fetch('https://your-api-url.com/api/status/stop-typing', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${apiKey}`
+  },
+  body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code></pre>
+                    </div>
                 </div>
             </div>
         </div>
@@ -525,10 +1000,15 @@
         <h2>Usage Examples</h2>
 
         <h3>Create a Session and Send a Message</h3>
-        <pre><code>// 1. Create session
+        <pre><code>const apiKey = 'YOUR_API_KEY';
+
+// 1. Create session
 fetch('/api/session/create', {
   method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${apiKey}`
+  },
   body: JSON.stringify({ sessionName: 'my-session' })
 })
 .then(response => response.json())
@@ -536,12 +1016,15 @@ fetch('/api/session/create', {
 .catch(error => console.error('Error:', error));
 
 // 2. Obtain and display QR code
-// Access /api/session/my-session/qr and scan with WhatsApp
+// Access /api/session/my-session/qr with Authorization header and scan with WhatsApp
 
 // 3. Send text message
 fetch('/api/message/send', {
   method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${apiKey}`
+  },
   body: JSON.stringify({
     sessionName: 'my-session',
     phone: '5511999999999',
@@ -554,6 +1037,96 @@ fetch('/api/message/send', {
 </code></pre>
     </div>
 
+    <section>
+        <h2>Números</h2>
+        
+        <div class="endpoint">
+            <span class="method get">GET</span>
+            <span class="route">/api/number/verify</span>
+            <h3>Verificar número no WhatsApp</h3>
+            <div class="params">
+                <h4>Parâmetros (Query):</h4>
+                <table>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                    </tr>
+                    <tr>
+                        <td>sessionName</td>
+                        <td>string</td>
+                        <td>Nome da sessão</td>
+                    </tr>
+                    <tr>
+                        <td>number</td>
+                        <td>string</td>
+                        <td>Número a ser verificado</td>
+                    </tr>
+                </table>
+            </div>
+            <h4>Response:</h4>
+            <pre><code>{
+  "exists": true,
+  "number": "5511999999999",
+  "sessionName": "session-name"
+}</code></pre>
+            <h4>Possible Errors:</h4>
+            <pre><code>{
+  "error": "Session not found or not connected",
+  "status": 404
+}
+
+{
+  "errors": [
+    {
+      "param": "number",
+      "msg": "Number is required"
+    }
+  ],
+  "status": 400
+}</code></pre>
+            <h4>Usage Examples:</h4>
+            <div class="code-example">
+                <h4>curl</h4>
+                <pre><code>curl -X GET "https://your-api-url.com/api/number/verify?sessionName=session-name&number=5511999999999" \
+  -H "Authorization: Bearer YOUR_API_KEY"</code></pre>
+            </div>
+            <div class="code-example">
+                <h4>PHP</h4>
+                <pre><code>$apiKey = 'YOUR_API_KEY';
+$sessionName = 'session-name';
+$number = '5511999999999';
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://your-api-url.com/api/number/verify?sessionName=' . $sessionName . '&number=' . $number);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Authorization: Bearer ' . $apiKey
+]);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+echo $response;</code></pre>
+            </div>
+            <div class="code-example">
+                <h4>JavaScript</h4>
+                <pre><code>const apiKey = 'YOUR_API_KEY';
+const sessionName = 'session-name';
+const number = '5511999999999';
+
+fetch(`https://your-api-url.com/api/number/verify?sessionName=${sessionName}&number=${number}`, {
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${apiKey}`
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</code></pre>
+            </div>
+        </div>
+    </section>
+
     <div class="container">
         <h2>Important Notes</h2>
         <ul>
@@ -564,6 +1137,7 @@ fetch('/api/message/send', {
             <li>Maximum file size for uploads is 10MB</li>
             <li>The SQLite database is created automatically on first run</li>
             <li>For shared hosting, ensure all folders have appropriate permissions</li>
+            <li>All endpoints require the <code>API_KEY</code> in the header; unauthorized requests return a 401 error</li>
         </ul>
     </div>
 

@@ -86,12 +86,36 @@ class SessionController {
                 return res.status(404).json({ error: 'QR code não disponível' });
             }
 
+            // Gerar QR code como imagem se ainda não existir
+            const qrcode = require('qrcode');
+            const crypto = require('crypto');
+            const path = require('path');
+            const fs = require('fs');
+
+            const qrFileName = `${crypto.randomBytes(16).toString('hex')}.png`;
+            const qrPath = path.join(__dirname, '../../public/qrcodes', qrFileName);
+            
+            // Garantir que o diretório existe
+            const qrDir = path.dirname(qrPath);
+            if (!fs.existsSync(qrDir)) {
+                fs.mkdirSync(qrDir, { recursive: true });
+            }
+            
+            // Gerar e salvar o QR code
+            await qrcode.toFile(qrPath, session.qr_code);
+            
+            // Construir URL do QR code
+            const APP_URL = process.env.APP_URL || 'http://localhost:3000';
+            const qrUrl = `${APP_URL}/qrcodes/${qrFileName}`;
+
             return res.json({
                 sessionName,
-                qrCode: session.qr_code
+                qrCode: session.qr_code,
+                qrCodeUrl: qrUrl
             });
         } catch (error) {
-            console.error('Erro ao obter QR code:', error);
+            const logger = require('../utils/logger');
+            logger.error('Erro ao obter QR code:', error);
             return res.status(500).json({ error: 'Erro ao obter QR code' });
         }
     }

@@ -80,5 +80,5 @@ app.use(errorHandler);
 // Iniciar servidor
 app.listen(PORT, () => {
     logger.info(`Server running on port ${PORT}`);
-    logger.info(`Documentação disponível em: http://localhost:${PORT}`);
+    logger.info(`Documentação disponível em: ${process.env.APP_URL || 'http://localhost:3000'}`);
 });

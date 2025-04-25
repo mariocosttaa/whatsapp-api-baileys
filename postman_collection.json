@@ -20,7 +20,7 @@
                             "raw": "{\n  \"sessionName\": \"{{sessionName}}\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/api/session/create",
+                            "raw": "{{baseUrl}}/session/create",
                             "host": ["{{baseUrl}}"],
                             "path": ["api", "session", "create"]
                         },
@@ -64,7 +64,7 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/session/{{sessionName}}/qr",
+                            "raw": "{{baseUrl}}/session/{{sessionName}}/qr",
                             "host": ["{{baseUrl}}"],
                             "path": ["api", "session", "{{sessionName}}", "qr"]
                         },
@@ -108,7 +108,7 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/session/{{sessionName}}/status",
+                            "raw": "{{baseUrl}}/session/{{sessionName}}/status",
                             "host": ["{{baseUrl}}"],
                             "path": ["api", "session", "{{sessionName}}", "status"]
                         },
@@ -142,7 +142,7 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/session",
+                            "raw": "{{baseUrl}}/session",
                             "host": ["{{baseUrl}}"],
                             "path": ["api", "session"]
                         },
@@ -172,7 +172,7 @@
                             "raw": "{}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/api/session/{{sessionName}}/close",
+                            "raw": "{{baseUrl}}/session/{{sessionName}}/close",
                             "host": ["{{baseUrl}}"],
                             "path": ["api", "session", "{{sessionName}}", "close"]
                         },
@@ -206,7 +206,7 @@
                         "method": "DELETE",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/session/{{sessionName}}",
+                            "raw": "{{baseUrl}}/session/{{sessionName}}",
                             "host": ["{{baseUrl}}"],
                             "path": ["api", "session", "{{sessionName}}"]
                         },
@@ -251,7 +251,7 @@
                             "raw": "{\n  \"sessionName\": \"{{sessionName}}\",\n  \"phone\": \"{{phone}}\",\n  \"message\": \"Hello, this is a test message!\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/api/message/send",
+                            "raw": "{{baseUrl}}/message/send",
                             "host": ["{{baseUrl}}"],
                             "path": ["api", "message", "send"]
                         },
@@ -319,7 +319,7 @@
                             ]
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/api/message/send-media",
+                            "raw": "{{baseUrl}}/message/send-media",
                             "host": ["{{baseUrl}}"],
                             "path": ["api", "message", "send-media"]
                         },
@@ -384,7 +384,7 @@
                             "raw": "{\n  \"sessionName\": \"{{sessionName}}\",\n  \"phone\": \"{{phone}}\",\n  \"duration\": 5000\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/api/status/typing",
+                            "raw": "{{baseUrl}}/status/typing",
                             "host": ["{{baseUrl}}"],
                             "path": ["api", "status", "typing"]
                         },
@@ -435,7 +435,7 @@
                             "raw": "{\n  \"sessionName\": \"{{sessionName}}\",\n  \"phone\": \"{{phone}}\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/api/status/stop-typing",
+                            "raw": "{{baseUrl}}/status/stop-typing",
                             "host": ["{{baseUrl}}"],
                             "path": ["api", "status", "stop-typing"]
                         },

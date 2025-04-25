@@ -16,8 +16,17 @@ initDatabase();
 
 // Middleware
 app.use(cors());
+
+// Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Debug middleware para verificar o corpo das requisições
+app.use((req, res, next) => {
+    logger.info(`Request body: ${JSON.stringify(req.body)}`);
+    next();
+});
+
 app.use('/public', express.static(path.join(__dirname, '../public')));
 
 // Rotas

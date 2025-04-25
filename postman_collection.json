@@ -739,7 +739,7 @@
                             "name": "Success",
                             "status": "OK",
                             "code": 200,
-                            "body": "{\n  \"exists\": true,\n  \"number\": \"{{phone}}\",\n  \"sessionName\": \"{{sessionName}}\"\n}",
+                            "body": "{\n  \"exists\": true,\n}",
                             "header": [
                                 {
                                     "key": "Content-Type",

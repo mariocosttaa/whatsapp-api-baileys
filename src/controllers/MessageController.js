@@ -6,13 +6,33 @@ class MessageController {
     // Enviar mensagem de texto
     static async sendText(req, res) {
         try {
-            // Validar requisição
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                return res.status(400).json({ errors: errors.array() });
+            if (!req.body) {
+                return res.status(400).json({
+                    error: 'Request body is missing'
+                });
             }
 
             const { sessionName, phone, message } = req.body;
+
+            if (!sessionName) {
+                return res.status(400).json({
+                    error: 'Missing required field: sessionName'
+                });
+            }
+
+            if (!phone) {
+                return res.status(400).json({
+                    error: 'Missing required field: phone'
+                });
+            }
+
+            if (!message) {
+                return res.status(400).json({
+                    error: 'Missing required field: message'
+                });
+            }
+
+            const caption = req.body.caption;
 
             // Verificar se a sessão existe
             if (!sessionExists(sessionName)) {
@@ -45,75 +65,86 @@ class MessageController {
     // Enviar mensagem com mídia (imagem, documento, etc)
     static async sendMedia(req, res) {
         try {
-            // Verificar se há arquivo
-            if (!req.file) {
-                return res.status(400).json({ error: 'Nenhum arquivo enviado' });
+            if (!req.body) {
+                return res.status(400).json({
+                    error: 'Request body is missing'
+                });
             }
 
-            const { sessionName, phone, caption } = req.body;
-            const { path: filePath, mimetype } = req.file;
+            const { sessionName: mediaSessionName, phone: mediaPhone, caption } = req.body;
+
+            if (!mediaSessionName) {
+                return res.status(400).json({
+                    error: 'Missing required field: sessionName'
+                });
+            }
+
+            if (!mediaPhone) {
+                return res.status(400).json({
+                    error: 'Missing required field: phone'
+                });
+            }
+
+            if (!req.file) {
+                return res.status(400).json({
+                    error: 'Missing required field: file'
+                });
+            }
 
             // Verificar se a sessão existe
-            if (!sessionExists(sessionName)) {
+            if (!sessionExists(mediaSessionName)) {
                 // Remover arquivo temporário
-                fs.unlinkSync(filePath);
+                fs.unlinkSync(req.file.path);
                 return res.status(404).json({ error: 'Sessão não encontrada ou não conectada' });
             }
 
-            const sock = getSession(sessionName);
+            const sock = getSession(mediaSessionName);
 
             // Formatar número para padrão WhatsApp
-            const formattedPhone = phone.includes('@s.whatsapp.net') ?
-                phone :
-                `${phone.replace(/\D/g, '')}@s.whatsapp.net`;
+            const formattedPhone = mediaPhone.includes('@s.whatsapp.net') ?
+                mediaPhone :
+                `${mediaPhone.replace(/\D/g, '')}@s.whatsapp.net`;
 
-            // Ler arquivo como buffer
-            const fileBuffer = fs.readFileSync(filePath);
+            // Ler arquivo
+            const buffer = fs.readFileSync(req.file.path);
+            const mimeType = req.file.mimetype;
 
-            // Configurar mensagem de acordo com o tipo de mídia
-            let messageOptions = {};
+            // Preparar mensagem com mídia
+            const mediaMessage = {
+                mimetype: mimeType,
+                buffer
+            };
 
-            if (mimetype.startsWith('image/')) {
-                messageOptions = {
-                    image: fileBuffer,
-                    caption: caption || ''
-                };
-            } else if (mimetype.startsWith('video/')) {
-                messageOptions = {
-                    video: fileBuffer,
-                    caption: caption || ''
-                };
-            } else {
-                // Enviar como documento
-                messageOptions = {
-                    document: fileBuffer,
-                    mimetype: mimetype,
-                    fileName: req.file.originalname,
-                    caption: caption || ''
-                };
+            // Adicionar legenda se fornecida
+            if (caption) {
+                mediaMessage.caption = caption;
             }
 
-            // Enviar mensagem
-            await sock.sendMessage(formattedPhone, messageOptions);
+            // Enviar mensagem com mídia
+            await sock.sendMessage(formattedPhone, {
+                image: mediaMessage
+            });
 
             // Remover arquivo temporário
-            fs.unlinkSync(filePath);
+            fs.unlinkSync(req.file.path);
 
             return res.json({
-                message: 'Mídia enviada com sucesso',
-                phone,
-                sessionName,
-                mediaType: mimetype
+                message: 'Mensagem com mídia enviada com sucesso',
+                phone: mediaPhone,
+                sessionName: mediaSessionName,
+                mediaType: mimeType
             });
         } catch (error) {
-            console.error('Erro ao enviar mídia:', error);
-
-            // Remover arquivo temporário em caso de erro
-            if (req.file && fs.existsSync(req.file.path)) {
-                fs.unlinkSync(req.file.path);
+            console.error('Erro ao enviar mensagem com mídia:', error);
+            // Tentar remover arquivo temporário em caso de erro
+            if (req.file && req.file.path) {
+                try {
+                    fs.unlinkSync(req.file.path);
+                } catch (unlinkError) {
+                    console.error('Erro ao remover arquivo temporário:', unlinkError);
+                }
             }
-
-            return res.status(500).json({ error: 'Erro ao enviar mídia' });
+            return res.status(500).json({ error: 'Erro ao enviar mensagem com mídia' });
         }
     }
 }

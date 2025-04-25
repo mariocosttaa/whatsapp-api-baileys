@@ -4,11 +4,23 @@ const SessionModel = require('../models/SessionModel');
 
 const verifyNumber = async (req, res) => {
     try {
+        if (!req.body) {
+            return res.status(400).json({
+                error: 'Request body is missing'
+            });
+        }
+
         const { sessionName, phoneNumber } = req.body;
         
-        if (!sessionName || !phoneNumber) {
+        if (!sessionName) {
             return res.status(400).json({
-                error: 'Missing required fields: sessionName and phoneNumber'
+                error: 'Missing required field: sessionName'
+            });
+        }
+
+        if (!phoneNumber) {
+            return res.status(400).json({
+                error: 'Missing required field: phoneNumber'
             });
         }
 

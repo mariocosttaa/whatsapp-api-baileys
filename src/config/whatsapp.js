@@ -14,8 +14,8 @@ const restoreSessions = async () => {
         if (!activeSessions || !Array.isArray(activeSessions)) return;
         
         for (const session of activeSessions) {
-            if (session.status === 'connected') {
-                await createSession(session.name, eventEmitter);
+            if (session.status === 'connected' && session.session_name) {
+                await createSession(session.session_name, eventEmitter);
             }
         }
     } catch (error) {
@@ -28,6 +28,9 @@ const restoreSessions = async () => {
 
 // Caminho para armazenar arquivos de autenticação
 const getSessionFolderPath = (sessionName) => {
+    if (!sessionName) {
+        throw new Error('Missing required parameter: sessionName');
+    }
     return path.join(__dirname, '../../sessions', sessionName);
 };
 
@@ -42,6 +45,12 @@ const ensureSessionFolder = (sessionName) => {
 
 // Iniciar uma sessão do WhatsApp
 const createSession = async(sessionName, eventEmitter) => {
+    if (!sessionName) {
+        throw new Error('Missing required parameter: sessionName');
+    }
+    if (!eventEmitter) {
+        throw new Error('Missing required parameter: eventEmitter');
+    }
     // Garantir que a pasta de sessão existe
     const sessionFolder = ensureSessionFolder(sessionName);
 
@@ -98,18 +107,27 @@ const createSession = async(sessionName, eventEmitter) => {
     return sock;
 };
 
-// Obter uma sessão existente ou criar uma nova
+// Obter uma sessão existente
 const getSession = (sessionName) => {
+    if (!sessionName) {
+        throw new Error('Missing required parameter: sessionName');
+    }
     return sessions[sessionName];
 };
 
 // Verificar se uma sessão existe
 const sessionExists = (sessionName) => {
+    if (!sessionName) {
+        throw new Error('Missing required parameter: sessionName');
+    }
     return !!sessions[sessionName];
 };
 
-// Encerrar uma sessão
-const closeSession = async(sessionName) => {
+// Fechar uma sessão
+const closeSession = async (sessionName) => {
+    if (!sessionName) {
+        throw new Error('Missing required parameter: sessionName');
+    }
     if (sessions[sessionName]) {
         await sessions[sessionName].logout();
         delete sessions[sessionName];

@@ -1,7 +1,20 @@
 const { getSession } = require('../config/whatsapp');
+const logger = require('../utils/logger');
 
 const verifyNumber = async (req, res) => {
     try {
+        // Log da requisição recebida
+        logger.info('Verify number request:', {
+            body: req.body,
+            headers: req.headers
+        });
+
+        if (!req.body) {
+            return res.status(400).json({
+                error: 'Request body is missing'
+            });
+        }
+
         const { sessionName, phoneNumber } = req.body;
         
         if (!sessionName || !phoneNumber) {

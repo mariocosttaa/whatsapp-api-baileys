@@ -712,27 +712,25 @@
                 {
                     "name": "Verify Number",
                     "request": {
-                        "method": "GET",
+                        "method": "POST",
                         "header": [
                             {
                                 "key": "Authorization",
                                 "value": "Bearer {{apiKey}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
                             }
                         ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"sessionName\": \"{{sessionName}}\",\n  \"phoneNumber\": \"{{phone}}\"\n}"
+                        },
                         "url": {
-                            "raw": "{{baseUrl}}/number/verify?sessionName={{sessionName}}&number={{phone}}",
+                            "raw": "{{baseUrl}}/number/verify",
                             "host": ["{{baseUrl}}"],
-                            "path": ["number", "verify"],
-                            "query": [
-                                {
-                                    "key": "sessionName",
-                                    "value": "{{sessionName}}"
-                                },
-                                {
-                                    "key": "number",
-                                    "value": "{{phone}}"
-                                }
-                            ]
+                            "path": ["number", "verify"]
                         },
                         "description": "Verifies if a number exists on WhatsApp."
                     },

@@ -21,7 +21,7 @@ router.post('/message/send', validators.sendMessage, MessageController.sendText)
 router.post('/message/send-media', upload.single('file'), validators.sendMedia, MessageController.sendMedia);
 
 // Number Routes
-router.get('/number/verify', NumberController.verifyNumber);
+router.post('/number/verify', NumberController.verifyNumber);
 
 // Session Routes
 router.post('/session/create', validators.createSession, SessionController.create);

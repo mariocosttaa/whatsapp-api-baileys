@@ -1088,7 +1088,9 @@ fetch('/message/send', {
             <h4>Usage Examples:</h4>
             <div class="code-example">
                 <h4>curl</h4>
-                <pre><code>curl -X GET "https://your-api-url.com/number/verify?sessionName=session-name&number=5511999999999" \
+                <pre><code>curl -X POST "https://your-api-url.com/number/verify" \
+    -H "Content-Type: application/json" \
+    -d '{"sessionName":"session-name","phoneNumber":"5511999999999"}' \
   -H "Authorization: Bearer YOUR_API_KEY"</code></pre>
             </div>
             <div class="code-example">
@@ -1098,7 +1100,12 @@ $sessionName = 'session-name';
 $number = '5511999999999';
 
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'https://your-api-url.com/number/verify?sessionName=' . $sessionName . '&number=' . $number);
+curl_setopt($ch, CURLOPT_URL, 'https://your-api-url.com/number/verify');
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+    'sessionName' => $sessionName,
+    'phoneNumber' => $number
+]));
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Authorization: Bearer ' . $apiKey
 ]);
@@ -1114,7 +1121,16 @@ echo $response;</code></pre>
 const sessionName = 'session-name';
 const number = '5511999999999';
 
-fetch(`https://your-api-url.com/number/verify?sessionName=${sessionName}&number=${number}`, {
+fetch('https://your-api-url.com/number/verify', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+        sessionName: sessionName,
+        phoneNumber: number
+    })
   method: 'GET',
   headers: {
     'Authorization': `Bearer ${apiKey}`

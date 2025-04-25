@@ -237,9 +237,13 @@
                     <h4>Response:</h4>
                     <pre><code>{
   "message": "Session created successfully",
-  "sessionName": "session-name",
-  "qrCode": "binary-image-data"
+  "sessionName": "session1",
+  "qrCode": "base64_qr_code_data",
+  "qrCodeUrl": "http://your-domain.com/qrcodes/session1.png"
 }</code></pre>
+                    <div class="note">
+                        <strong>Note:</strong> The <code>qrCodeUrl</code> field provides a direct URL to the QR code image in PNG format.
+                    </div>
                     <h4>Possible Errors:</h4>
                     <pre><code>{
   "error": "Session name is required",
@@ -307,9 +311,13 @@ fetch('https://your-api-url.com/session/create', {
                     <p>Retrieves the QR code for a session.</p>
                     <h4>Response:</h4>
                     <pre><code>{
-  "sessionName": "session-name",
-  "qrCode": "/public/qrcodes/session-name.png"
+  "sessionName": "session1",
+  "qrCode": "base64_qr_code_data",
+  "qrCodeUrl": "http://your-domain.com/qrcodes/session1.png"
 }</code></pre>
+                    <div class="note">
+                        <strong>Note:</strong> The <code>qrCodeUrl</code> field provides a direct URL to the QR code image in PNG format.
+                    </div>
                     <h4>Possible Errors:</h4>
                     <pre><code>{
   "error": "Session not found",

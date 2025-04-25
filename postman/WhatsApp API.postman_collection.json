@@ -1,0 +1,110 @@
+{
+    "info": {
+        "name": "WhatsApp API",
+        "description": "Collection for WhatsApp API using Baileys",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Session",
+            "item": [
+                {
+                    "name": "Create Session",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"sessionName\": \"session1\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/session/create",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["session", "create"]
+                        },
+                        "description": "Creates a new WhatsApp session"
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"sessionName\": \"session1\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/session/create",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": ["session", "create"]
+                                }
+                            },
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Session created successfully\",\n    \"sessionName\": \"session1\",\n    \"qrCode\": \"base64_qr_code_data\",\n    \"qrCodeUrl\": \"http://your-domain.com/qrcodes/session1.png\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get QR Code",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/session/:sessionName/qr",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["session", ":sessionName", "qr"],
+                            "variable": [
+                                {
+                                    "key": "sessionName",
+                                    "value": "session1",
+                                    "description": "Name of the session"
+                                }
+                            ]
+                        },
+                        "description": "Get QR code for a session"
+                    },
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/session/:sessionName/qr",
+                                    "host": ["{{baseUrl}}"],
+                                    "path": ["session", ":sessionName", "qr"]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"sessionName\": \"session1\",\n    \"qrCode\": \"base64_qr_code_data\",\n    \"qrCodeUrl\": \"http://your-domain.com/qrcodes/session1.png\"\n}"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

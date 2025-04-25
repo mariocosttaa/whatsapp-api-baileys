@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const { initDatabase } = require('./database/sqlite');
 const apiRoutes = require('./routes/api');
 const webRoutes = require('./routes/web');
@@ -8,8 +9,28 @@ const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
 require('dotenv').config();
 
-const app = express();
+const app = express(); 
 const PORT = process.env.PORT || 3000;
+
+// Função para reiniciar o servidor
+const restartServer = () => {
+    logger.info('Mudanças detectadas, reiniciando servidor...');
+    process.on('exit', () => {
+        require('child_process').spawn(process.argv[0], process.argv.slice(1), {
+            cwd: process.cwd(),
+            detached: true,
+            stdio: 'inherit'
+        });
+    });
+    process.exit(); 
+};
+
+// Monitorar mudanças na pasta src
+fs.watch(path.join(__dirname), { recursive: true }, (eventType, filename) => {
+    if (filename && filename.endsWith('.js')) {
+        restartServer();
+    }
+});
 
 // Inicializar o banco de dados
 (async () => {

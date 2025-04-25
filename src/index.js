@@ -37,7 +37,7 @@ fs.watch(path.join(__dirname), { recursive: true }, (eventType, filename) => {
     try {
         await initDatabase();
     } catch (error) {
-        console.error('Failed to initialize database:', error);
+        logger.error('Failed to initialize database:', error);
         process.exit(1);
     }
 })();
@@ -48,6 +48,15 @@ app.use(cors());
 // Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Servir arquivos estáticos
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Garantir que o diretório de QR codes existe
+const qrcodesDir = path.join(__dirname, '../public/qrcodes');
+if (!fs.existsSync(qrcodesDir)) {
+    fs.mkdirSync(qrcodesDir, { recursive: true });
+}
 
 // Debug middleware para verificar o corpo das requisições
 app.use((req, res, next) => {

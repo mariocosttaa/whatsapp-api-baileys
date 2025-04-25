@@ -1,8 +1,13 @@
 const { default: makeWASocket, DisconnectReason, useMultiFileAuthState } = require('@whiskeysockets/baileys');
 const path = require('path');
 const fs = require('fs');
+const qrcode = require('qrcode');
+const crypto = require('crypto');
 const SessionModel = require('../models/SessionModel');
 const eventEmitter = require('../utils/eventEmitter');
+const logger = require('../utils/logger');
+
+const APP_URL = process.env.APP_URL || 'http://localhost:3000';
 
 // Armazenar sessões ativas
 const sessions = {};
@@ -21,7 +26,7 @@ const restoreSessions = async () => {
     } catch (error) {
         // Ignora erro se a tabela ainda não existir
         if (!error.message?.includes('no such table')) {
-            console.error('Erro ao restaurar sessões:', error);
+            logger.error('Erro ao restaurar sessões:', error);
         }
     }
 };
@@ -68,10 +73,30 @@ const createSession = async(sessionName, eventEmitter) => {
     sock.ev.on('connection.update', async(update) => {
         const { connection, lastDisconnect, qr } = update;
 
-        // Emitir evento de QR Code
+        // Gerar e salvar QR Code
         if (qr) {
-            console.log(`QR code gerado para ${sessionName}: ${qr}`);
-            eventEmitter.emit('qr', { sessionName, qr });
+            try {
+                // Gerar nome único para o arquivo QR
+                const qrFileName = `${crypto.randomBytes(16).toString('hex')}.png`;
+                const qrPath = path.join(__dirname, '../../public/qrcodes', qrFileName);
+                
+                // Garantir que o diretório existe
+                const qrDir = path.dirname(qrPath);
+                if (!fs.existsSync(qrDir)) {
+                    fs.mkdirSync(qrDir, { recursive: true });
+                }
+                
+                // Gerar e salvar o QR code
+                await qrcode.toFile(qrPath, qr);
+                
+                // Construir URL do QR code
+                const qrUrl = `${APP_URL}/qrcodes/${qrFileName}`;
+                
+                logger.info(`QR code gerado para ${sessionName}`, { qrUrl });
+                eventEmitter.emit('qr', { sessionName, qr, qrUrl });
+            } catch (error) {
+                logger.error('Erro ao processar QR code:', error);
+            }
         }
 
         if (connection === 'close') {
